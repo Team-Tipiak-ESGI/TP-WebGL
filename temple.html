@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<title>three.js webgl - geometry - cube</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+
+	<body>
+
+        <script src="/threejs/three.js"></script>
+		<script src="/threejs/OrbitControls.js"></script>
+		<script src="/threejs/dat.gui.min.js"></script>
+		<script src="/main.js"></script>
+
+		<script type="module">
+			const world = new World();
+			
+			animate();
+			world.createSpotLight();
+			world.buildGui();
+
+			fetch('/shapes.json')
+				.then(res => res.json())
+				.then(json => {
+					// Add shapes from the JSON
+
+					for (const shape of json) {
+						try {
+							world.createShape({
+								position: shape.position,
+								size: shape.size,
+								image: shape.image,
+								geometry: shape.geometry,
+							});
+						} catch (e) {
+							console.log(e);
+						}
+					}
+				});
+
+			/**
+			 * Animate the world
+			 */
+			function animate() {
+				world.renderer.render(world.scene, world.camera);
+
+				world.controls.update();
+
+				requestAnimationFrame(animate);
+			}
+		</script>
+
+	</body>
+
+</html>

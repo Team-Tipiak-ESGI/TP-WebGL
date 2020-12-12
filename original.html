@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<title>three.js webgl - geometry - cube</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+
+	<body>
+
+        <script src="/threejs/three.js"></script>
+
+		<script type="module">
+			import * as THREE from './three.module.js';
+
+
+			let camera, scene, renderer;
+
+			//_________________________________________________________
+			//init pilliers
+
+			let pil = [];
+			let base;
+			let plafond;
+			let toit = [];
+			let mur1, mur2, mur3, mur4, mur5, mur6, mur7;
+
+
+			init();
+			animate();
+
+			function init() {
+
+				camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 5000);
+
+				//_________________________________________________________
+				//ideal View 
+				
+				camera.position.z = 1900;
+				camera.position.y = 800;
+				camera.position.x = 1500;
+				camera.lookAt(200,-100,0);
+
+				//_________________________________________________________
+				//Test View */
+
+				camera.position.set(1600, 0, 1000);
+				camera.lookAt(0, 0, 0);
+				// 
+
+
+				scene = new THREE.Scene();
+
+				//_________________________________________________________
+				//Création Base
+
+
+				for (var r = 0; r <= 3; r++) {
+					const textureBase = new THREE.TextureLoader().load('textures/Pillier.jpg');
+					const geometryBase = [new THREE.BoxBufferGeometry(1150, 20, 1700),
+					new THREE.BoxBufferGeometry(1170, 20, 1720),
+					new THREE.BoxBufferGeometry(1190, 20, 1740),
+					new THREE.BoxBufferGeometry(1210, 20, 1760)
+					];
+
+					const materialBase = new THREE.MeshBasicMaterial({ map: textureBase });
+
+					base = new THREE.Mesh(geometryBase[r], materialBase);
+					base.position.x = 100;
+					base.position.y = -200 - (r * 20);
+					base.position.z = 0;
+					scene.add(base);
+				}
+
+				//_________________________________________________________
+				//Création des Pilliers
+
+				const texturePillier = new THREE.TextureLoader().load('textures/piliers.jpg');
+				const geometryPillier = new THREE.CylinderBufferGeometry(30, 30, 500);
+				const materialPillier = new THREE.MeshBasicMaterial({ map: texturePillier });
+				for (var i = 0; i <= 5; i++) {
+					pil[i] = new THREE.Mesh(geometryPillier, materialPillier);
+					pil[i].position.x = (-400) + (i * 200);
+					pil[i].position.z = -800;
+					scene.add(pil[i]);
+				}
+				for (var y = 0; y <= 5; y++) {
+					pil[y] = new THREE.Mesh(geometryPillier, materialPillier);
+					pil[y].position.x = (-400) + (y * 200);
+					pil[y].position.z = +800;
+					scene.add(pil[y]);
+				}
+				for (var j = 0; j <= 7; j++) {
+					pil[j] = new THREE.Mesh(geometryPillier, materialPillier);
+					pil[j].position.x = +600;
+					pil[j].position.z = (-600) + (j * 200);
+					scene.add(pil[j]);
+				}
+				for (var k = 0; k <= 7; k++) {
+					pil[k] = new THREE.Mesh(geometryPillier, materialPillier);
+					pil[k].position.x = -400;
+					pil[k].position.z = (-600) + (k * 200);
+					scene.add(pil[k]);
+				}
+
+				//_________________________________________________________
+				//Salle
+
+				const textureMur1 = new THREE.TextureLoader().load('textures/Mur.jng');
+				const geometryMur1 = new THREE.BoxBufferGeometry(850, 500, 30);
+				const materialMur1 = new THREE.MeshBasicMaterial({ map: textureMur1 });
+				mur1 = new THREE.Mesh(geometryMur1, materialMur1);
+				mur1.position.x = 100;
+				mur1.position.y = -10;
+				mur1.position.z = -650;
+				scene.add(mur1);
+
+				const textureMur2 = new THREE.TextureLoader().load('textures/Mur.jpg');
+				const geometryMur2 = new THREE.BoxBufferGeometry(30, 500, 1300);
+				const materialMur2 = new THREE.MeshBasicMaterial({ map: textureMur2 });
+				mur2 = new THREE.Mesh(geometryMur2, materialMur2);
+				mur2.position.x = 510;
+				mur2.position.y = -10;
+				mur2.position.z = 0;
+				scene.add(mur2);
+
+				const textureMur3 = new THREE.TextureLoader().load('textures/Mur.jpg');
+				const geometryMur3 = new THREE.BoxBufferGeometry(30, 500, 1300);
+				const materialMur3 = new THREE.MeshBasicMaterial({ map: textureMur3 });
+				mur3 = new THREE.Mesh(geometryMur3, materialMur3);
+				mur3.position.x = -310;
+				mur3.position.y = -10;
+				mur3.position.z = 0;
+				scene.add(mur3);
+
+				//_________________________________________________________
+				//Entrée
+
+				const textureMur5 = new THREE.TextureLoader().load('textures/sananesfortnite.gif');
+				const geometryMur5 = new THREE.BoxBufferGeometry(300, 300, 30);
+				const materialMur5 = new THREE.MeshBasicMaterial({ map: textureMur5 });
+				mur5 = new THREE.Mesh(geometryMur5, materialMur5);
+				mur5.position.x = 100;
+				mur5.position.y = -10;
+				mur5.position.z = 100;
+				scene.add(mur5);
+
+				const textureMur4 = new THREE.TextureLoader().load('textures/Mur.jpg');
+				const geometryMur4 = new THREE.BoxBufferGeometry(300, 420, 30);
+				const materialMur4 = new THREE.MeshBasicMaterial({ map: textureMur4 });
+				mur4 = new THREE.Mesh(geometryMur4, materialMur4);
+				mur4.position.x = 375;
+				mur4.position.y = 20;
+				mur4.position.z = 650;
+				scene.add(mur4);
+
+				const textureMur6 = new THREE.TextureLoader().load('textures/Mur.jpg');
+				const geometryMur6 = new THREE.BoxBufferGeometry(300, 420, 30);
+				const materialMur6 = new THREE.MeshBasicMaterial({ map: textureMur6 });
+				mur6 = new THREE.Mesh(geometryMur6, materialMur6);
+				mur6.position.x = -175;
+				mur6.position.y = 20;
+				mur6.position.z = 650;
+				scene.add(mur6);
+
+
+				//_________________________________________________________
+				//plafond
+
+				const texturePlafond = new THREE.TextureLoader().load('textures/ruine.jpg');
+				const geometryPlafond = new THREE.BoxBufferGeometry(1190, 40, 1740);
+				const materialPlafond = new THREE.MeshBasicMaterial({ map: texturePlafond });
+				plafond = new THREE.Mesh(geometryPlafond, materialPlafond);
+				plafond.position.x = 100;
+				plafond.position.y = +250;
+				plafond.position.z = 0;
+				scene.add(plafond);
+
+				//_________________________________________________________
+				//toit
+
+				const textureToit = new THREE.TextureLoader().load('textures/Pillier.jpg');
+				let geometryToit = [];
+				var materialToit = new THREE.MeshBasicMaterial({ map: textureToit });
+
+				for (var n = 0; n <= 238; n++) {
+					geometryToit[n] = new THREE.BoxBufferGeometry((1190 - (n * 5)), 0.3, 1740);
+					toit[n] = new THREE.Mesh(geometryToit[n], materialToit);
+					toit[n].position.x = 100;
+					toit[n].position.y = ((+270) + n * 0.5);
+					toit[n].position.z = 0;
+					scene.add(toit[n]);
+				}
+
+				let shapes = [];
+				for (const mesh of scene.children) {
+					shapes.push({
+						position: [mesh.position.x, mesh.position.y, mesh.position.z],
+						size: Object.values(mesh.geometry.parameters).slice(0, 3),
+						geometry: mesh.geometry.constructor.name,
+						image: mesh.material.map.uuid,
+					});
+				}
+
+				console.log(JSON.stringify(shapes));
+
+
+
+
+
+				//_________________________________________________________
+				//Ancien code test
+
+				//const geometry = new THREE.BoxBufferGeometry( 400, 200, 400 );
+				//const geometry2 = new THREE.CylinderBufferGeometry( 50, 50, 800 );
+
+				//const material = new THREE.MeshBasicMaterial( { map: texture } );
+
+				/*mesh = new THREE.Mesh( geometry, material );
+				scene.add( mesh );
+
+				mesh2 = new THREE.Mesh( geometry, material );
+				scene.add( mesh2 );
+
+				mesh3 = new THREE.Mesh( geometry2, material );
+				scene.add( mesh3 );*/
+
+				//_________________________________________________________
+
+				renderer = new THREE.WebGLRenderer({ antialias: true });
+				renderer.setPixelRatio(window.devicePixelRatio);
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				document.body.appendChild(renderer.domElement);
+
+				window.addEventListener('resize', onWindowResize, false);
+				//document.addEventListener( 'mousemove', onMouseMove, false );
+
+			}
+
+			/*function onMouseMove(event) {
+
+				camera.rotation.x = (event.y - window.innerHeight/2) / window.innerHeight;
+				camera.rotation.y = (event.x - window.innerWidth/2) / window.innerWidth;
+
+
+
+			}*/
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize(window.innerWidth, window.innerHeight);
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame(animate);
+
+				//mesh.rotation.x += 0.005;
+				//mesh.rotation.y += 0.01;
+
+				renderer.render(scene, camera);
+
+
+			}
+
+		</script>
+
+	</body>
+
+</html>

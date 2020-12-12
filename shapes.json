@@ -1,0 +1,562 @@
+[
+    {
+        "position": [
+            100,
+            -200,
+            0
+        ],
+        "size": [
+            1150,
+            20,
+            1700
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/Pillier.jpg"
+    },
+    {
+        "position": [
+            100,
+            -220,
+            0
+        ],
+        "size": [
+            1170,
+            20,
+            1720
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/Pillier.jpg"
+    },
+    {
+        "position": [
+            100,
+            -240,
+            0
+        ],
+        "size": [
+            1190,
+            20,
+            1740
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/Pillier.jpg"
+    },
+    {
+        "position": [
+            100,
+            -260,
+            0
+        ],
+        "size": [
+            1210,
+            20,
+            1760
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/Pillier.jpg"
+    },
+    {
+        "position": [
+            -400,
+            0,
+            -800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            -200,
+            0,
+            -800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            0,
+            0,
+            -800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            200,
+            0,
+            -800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            400,
+            0,
+            -800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            600,
+            0,
+            -800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            -400,
+            0,
+            800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            -200,
+            0,
+            800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            0,
+            0,
+            800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            200,
+            0,
+            800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            400,
+            0,
+            800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            600,
+            0,
+            800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            600,
+            0,
+            -600
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            600,
+            0,
+            -400
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            600,
+            0,
+            -200
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            600,
+            0,
+            0
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            600,
+            0,
+            200
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            600,
+            0,
+            400
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            600,
+            0,
+            600
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            600,
+            0,
+            800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            -400,
+            0,
+            -600
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            -400,
+            0,
+            -400
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            -400,
+            0,
+            -200
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            -400,
+            0,
+            0
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            -400,
+            0,
+            200
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            -400,
+            0,
+            400
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            -400,
+            0,
+            600
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            -400,
+            0,
+            800
+        ],
+        "size": [
+            30,
+            30,
+            500
+        ],
+        "geometry": "CylinderBufferGeometry",
+        "image": "textures/piliers.jpg"
+    },
+    {
+        "position": [
+            100,
+            -10,
+            -650
+        ],
+        "size": [
+            850,
+            500,
+            30
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/mur.jpg"
+    },
+    {
+        "position": [
+            510,
+            -10,
+            0
+        ],
+        "size": [
+            30,
+            500,
+            1300
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/mur.jpg"
+    },
+    {
+        "position": [
+            -310,
+            -10,
+            0
+        ],
+        "size": [
+            30,
+            500,
+            1300
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/mur.jpg"
+    },
+    {
+        "position": [
+            100,
+            -10,
+            100
+        ],
+        "size": [
+            300,
+            300,
+            30
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/mur.jpg"
+    },
+    {
+        "position": [
+            375,
+            20,
+            650
+        ],
+        "size": [
+            300,
+            420,
+            30
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/mur.jpg"
+    },
+    {
+        "position": [
+            -175,
+            20,
+            650
+        ],
+        "size": [
+            300,
+            420,
+            30
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/mur.jpg"
+    },
+    {
+        "position": [
+            100,
+            250,
+            0
+        ],
+        "size": [
+            1190,
+            40,
+            1740
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/ruine.jpg"
+    },
+    {
+        "position": [
+            100,
+            663,
+            0
+        ],
+        "size": [
+            1190,
+            238,
+            1740
+        ],
+        "geometry": "Triangle",
+        "image": "textures/ruine.jpg"
+    }
+]
