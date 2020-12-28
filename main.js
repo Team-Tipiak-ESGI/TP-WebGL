@@ -143,7 +143,30 @@ class World {
                 break;
 
             case 'Triangle':
-                geometry = new THREE.BoxBufferGeometry(size.w, size.h, size.d);
+                geometry = new THREE.Geometry();
+                const v1 = new THREE.Vector3(-size.w / 2, 0, -size.d / 2);
+                const v2 = new THREE.Vector3(size.w / 2, 0, -size.d / 2);
+                const v3 = new THREE.Vector3(0, size.h, -size.d / 2);
+
+                const v4 = new THREE.Vector3(0, size.h, size.d / 2);
+                const v5 = new THREE.Vector3(size.w / 2, 0, size.d / 2);
+                const v6 = new THREE.Vector3(-size.w / 2, 0, size.d / 2);
+
+                geometry.vertices.push(v1);
+                geometry.vertices.push(v2);
+                geometry.vertices.push(v3);
+                geometry.vertices.push(v4);
+                geometry.vertices.push(v5);
+                geometry.vertices.push(v6);
+
+                // Generate all faces
+                // TODO: Optimise by drawing only the required faces
+                for (let i = 0; i < geometry.vertices.length; i++)
+                    for (let j = 0; j < geometry.vertices.length; j++)
+                        for (let k = 0; k < geometry.vertices.length; k++)
+                            geometry.faces.push(new THREE.Face3(i, j, k));
+
+                geometry.computeFaceNormals();
                 break;
 
             case 'BoxBufferGeometry':

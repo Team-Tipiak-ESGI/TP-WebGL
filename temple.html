@@ -10,10 +10,10 @@
 
 	<body>
 
-        <script src="/threejs/three.js"></script>
-		<script src="/threejs/OrbitControls.js"></script>
-		<script src="/threejs/dat.gui.min.js"></script>
-		<script src="/main.js"></script>
+        <script src="threejs/three.js"></script>
+		<script src="threejs/OrbitControls.js"></script>
+		<script src="threejs/dat.gui.min.js"></script>
+		<script src="main.js"></script>
 
 		<script type="module">
 			const world = new World();
@@ -22,7 +22,7 @@
 			world.createSpotLight();
 			world.buildGui();
 
-			fetch('/shapes.json')
+			fetch('shapes.json')
 				.then(res => res.json())
 				.then(json => {
 					// Add shapes from the JSON
