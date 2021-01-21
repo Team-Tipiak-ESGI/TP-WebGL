@@ -557,6 +557,21 @@
             1740
         ],
         "geometry": "Triangle",
-        "image": "textures/ruine.jpg"
+        "image": "textures/ruine.jpg",
+        "mirror": true
+    },
+    {
+        "position": [
+            0,
+            0,
+            0
+        ],
+        "size": [
+            5000,
+            10,
+            10
+        ],
+        "geometry": "SphereGeometry",
+        "image": "textures/blue-sky.jpg"
     }
 ]

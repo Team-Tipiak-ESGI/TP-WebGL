@@ -4,7 +4,7 @@ class World {
      */
     constructor() {
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 5000);
+        this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
 
@@ -38,17 +38,17 @@ class World {
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    createSpotLight() {
+    createSpotLight(x, y, z) {
         this.spotLight = new THREE.SpotLight(0xffffff, 1);
-        this.spotLight.position.set(1600, 0, 1000);
+        this.spotLight.position.set(x, y, z);
         this.spotLight.angle = Math.PI / 4;
         this.spotLight.penumbra = 0.1;
         this.spotLight.decay = 2;
         this.spotLight.distance = 20000;
 
         this.spotLight.castShadow = true;
-        this.spotLight.shadow.mapSize.width = 512;
-        this.spotLight.shadow.mapSize.height = 512;
+        this.spotLight.shadow.mapSize.width = 2048;
+        this.spotLight.shadow.mapSize.height = 2048;
         this.spotLight.shadow.camera.near = 10;
         this.spotLight.shadow.camera.far = 200;
         this.spotLight.shadow.focus = 1;
@@ -57,6 +57,10 @@ class World {
 
         this.lightHelper = new THREE.SpotLightHelper(this.spotLight);
         this.scene.add(this.lightHelper);
+    }
+
+    getSpotlight() {
+        return this.spotLight;
     }
 
     
@@ -169,6 +173,10 @@ class World {
                 geometry.computeFaceNormals();
                 break;
 
+            case 'SphereGeometry':
+                geometry = new THREE.SphereGeometry(size.w, size.h, size.d);
+                break;
+
             case 'BoxBufferGeometry':
             default:
                 geometry = new THREE.BoxBufferGeometry(size.w, size.h, size.d);
@@ -179,16 +187,22 @@ class World {
         const texture = new THREE.TextureLoader().load(options.image);
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.x = 4;
-        texture.repeat.y = 4;
+        if (options.geometry !== 'SphereGeometry') {
+            texture.repeat.x = 4;
+            texture.repeat.y = 4;
+        }
 
         const material = new THREE.MeshPhongMaterial({ map: texture, dithering: true });
 
         const mesh = new THREE.Mesh(geometry, material);
 
         mesh.position.set(...position);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
+        if (options.geometry !== 'SphereGeometry') {
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+        } else {
+            mesh.material.side = THREE.DoubleSide;
+        }
 
         this.scene.add(mesh);
     }

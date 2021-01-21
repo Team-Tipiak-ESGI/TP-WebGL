@@ -19,7 +19,7 @@
 			const world = new World();
 			
 			animate();
-			world.createSpotLight();
+			world.createSpotLight(1600, 0, 1000);
 			world.buildGui();
 
 			fetch('shapes.json')
@@ -48,6 +48,11 @@
 				world.renderer.render(world.scene, world.camera);
 
 				world.controls.update();
+
+				const sl = world.spotLight;
+				if (sl !== undefined) {
+					sl.position.y = (sl.position.y % 1000) + 1;
+				}
 
 				requestAnimationFrame(animate);
 			}
