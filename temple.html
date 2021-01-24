@@ -13,11 +13,20 @@
         <script src="threejs/three.js"></script>
 		<script src="threejs/OrbitControls.js"></script>
 		<script src="threejs/dat.gui.min.js"></script>
+		<script src="stats.min.js"></script>
 		<script src="main.js"></script>
 
+
 		<script type="module">
+			import { ColladaLoader } from './../three.js-master/examples/jsm/loaders/ColladaLoader.js';
+
 			const world = new World();
+
+			var stats = new Stats();
+			stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+			document.body.appendChild( stats.dom );
 			
+			ColladaPart();
 			animate();
 			world.createSpotLight(1600, 0, 1000);
 			world.buildGui();
@@ -44,7 +53,35 @@
 			/**
 			 * Animate the world
 			 */
+
+			function ColladaPart() {
+	            const loader = new ColladaLoader();
+	            loader.load( 'Rumba Dancing.dae', function ( collada ) {
+
+	                const animations = collada.animations;
+	                const avatar = collada.scene;
+
+	                avatar.traverse( function ( node ) {
+
+	                    if ( node.isSkinnedMesh ) {
+
+	                        node.frustumCulled = false;
+
+	                    }
+
+	                } );
+
+	                const mixer = new THREE.AnimationMixer( avatar );
+	                mixer.clipAction( animations[ 0 ] ).play();
+
+	                scene.add( avatar );
+
+	                } );
+
+	    	}
+
 			function animate() {
+				stats.begin();
 				world.renderer.render(world.scene, world.camera);
 
 				world.controls.update();
@@ -53,9 +90,11 @@
 				if (sl !== undefined) {
 					sl.position.y = (sl.position.y % 1000) + 1;
 				}
+				stats.end();
 
 				requestAnimationFrame(animate);
 			}
+			requestAnimationFrame( animate );
 		</script>
 
 	</body>
