@@ -13,13 +13,12 @@
         <script src="threejs/three.js"></script>
 		<script src="threejs/OrbitControls.js"></script>
 		<script src="threejs/dat.gui.min.js"></script>
+		<script src="threejs/ColladaLoader.js"></script>
 		<script src="stats.min.js"></script>
 		<script src="main.js"></script>
 
 
 		<script type="module">
-			import { ColladaLoader } from './../three.js-master/examples/jsm/loaders/ColladaLoader.js';
-
 			const world = new World();
 
 			var stats = new Stats();
@@ -55,7 +54,7 @@
 			 */
 
 			function ColladaPart() {
-	            const loader = new ColladaLoader();
+	            const loader = new THREE.ColladaLoader();
 	            loader.load( 'Rumba Dancing.dae', function ( collada ) {
 
 	                const animations = collada.animations;
@@ -74,7 +73,7 @@
 	                const mixer = new THREE.AnimationMixer( avatar );
 	                mixer.clipAction( animations[ 0 ] ).play();
 
-	                scene.add( avatar );
+	                world.scene.add( avatar );
 
 	                } );
 
