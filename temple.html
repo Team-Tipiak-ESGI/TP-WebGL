@@ -10,23 +10,26 @@
 
 	<body>
 
-        <script src="threejs/three.js"></script>
+        <!-- <script src="threejs/three.js"></script>
 		<script src="threejs/OrbitControls.js"></script>
-		<script src="threejs/dat.gui.min.js"></script>
 		<script src="threejs/ColladaLoader.js"></script>
-		<script src="stats.min.js"></script>
-		<script src="main.js"></script>
+		<script src="main.js"></script> -->
+		<script src="threejs/stats.min.js"></script>
+		<script src="threejs/dat.gui.min.js"></script>
 
 
 		<script type="module">
+			import * as THREE from '/threejs/three.module.js';
+			import { ColladaLoader } from '/threejs/jsm/loaders/ColladaLoader.js';
+			import { World } from '/main.js';
+
 			const world = new World();
+			const clock = new THREE.Clock();
 
 			var stats = new Stats();
 			stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
 			document.body.appendChild( stats.dom );
 			
-			ColladaPart();
-			animate();
 			world.createSpotLight(1600, 0, 1000);
 			world.buildGui();
 
@@ -49,35 +52,61 @@
 					}
 				});
 
+				
+			let model, mixer;
+
+			// collada
+
+			const loader = new ColladaLoader();
+			loader.load('./resources/Rumba Dancing.dae', function (collada) {
+
+				const avatar = collada.scene;
+				const animations = avatar.animations;
+
+				avatar.traverse(function (node) {
+
+					if (node.isSkinnedMesh) {
+						node.frustumCulled = false;
+					}
+				});
+
+				mixer = new THREE.AnimationMixer(avatar);
+				mixer.clipAction(animations[0]).play();
+
+				world.scene.add(avatar);
+
+				avatar.scale.set(2, 2, 2)
+				avatar.position.y = -200;
+			});
+
+			// listener
+			const listener = new THREE.AudioListener();
+			world.camera.add(listener);
+
+			// audio loader
+			const audioLoader = new THREE.AudioLoader();
+
+			// audio sphere
+			const sphere = new THREE.SphereGeometry(20, 32, 16);
+			const material1 = new THREE.MeshPhongMaterial({ color: 0xffaa00, flatShading: true, shininess: 0 });
+			const mesh1 = new THREE.Mesh(sphere, material1);
+			mesh1.position.set(200, -180, 0);
+			world.scene.add(mesh1);
+
+			const sound1 = new THREE.PositionalAudio(listener);
+			audioLoader.load('/resources/rick.mp3', function (buffer) {
+
+				sound1.setBuffer(buffer);
+				sound1.setRefDistance(50);
+				sound1.play();
+
+			});
+			mesh1.add(sound1);
+
+
 			/**
 			 * Animate the world
 			 */
-
-			function ColladaPart() {
-	            const loader = new THREE.ColladaLoader();
-	            loader.load( 'Rumba Dancing.dae', function ( collada ) {
-
-	                const animations = collada.animations;
-	                const avatar = collada.scene;
-
-	                avatar.traverse( function ( node ) {
-
-	                    if ( node.isSkinnedMesh ) {
-
-	                        node.frustumCulled = false;
-
-	                    }
-
-	                } );
-
-	                const mixer = new THREE.AnimationMixer( avatar );
-	                mixer.clipAction( animations[ 0 ] ).play();
-
-	                world.scene.add( avatar );
-
-	                } );
-
-	    	}
 
 			function animate() {
 				stats.begin();
@@ -92,7 +121,17 @@
 				stats.end();
 
 				requestAnimationFrame(animate);
+				
+				// Collada animation
+
+				const delta = clock.getDelta();
+				if (mixer !== undefined) {
+					mixer.update(delta);
+				}
+
+				world.renderer.render(world.scene, world.camera);
 			}
+
 			requestAnimationFrame( animate );
 		</script>
 

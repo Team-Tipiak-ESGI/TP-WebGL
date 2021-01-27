@@ -1,4 +1,8 @@
-class World {
+import * as THREE from '/threejs/three.module.js';
+import { OrbitControls } from '/threejs/jsm/controls/OrbitControls.js';
+import { ColladaLoader } from '/threejs/jsm/loaders/ColladaLoader.js';
+
+export class World {
     /**
      * Create a scene for the world
      */
@@ -6,7 +10,7 @@ class World {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
-        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
         // Create camera
         this.camera.position.set(1600, 0, 1000);

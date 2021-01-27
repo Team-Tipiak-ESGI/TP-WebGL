@@ -491,20 +491,6 @@
     },
     {
         "position": [
-            100,
-            -10,
-            100
-        ],
-        "size": [
-            300,
-            300,
-            30
-        ],
-        "geometry": "BoxBufferGeometry",
-        "image": "textures/mur.jpg"
-    },
-    {
-        "position": [
             375,
             20,
             650
