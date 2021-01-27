@@ -21,6 +21,7 @@
 		<script type="module">
 			import * as THREE from '/threejs/three.module.js';
 			import { ColladaLoader } from '/threejs/jsm/loaders/ColladaLoader.js';
+			import { Reflector } from '/threejs/jsm/objects/Reflector.js';
 			import { World } from '/main.js';
 
 			const world = new World();
@@ -102,6 +103,20 @@
 
 			});
 			mesh1.add(sound1);
+
+			// mirror
+			let geometry, material;
+
+			geometry = new THREE.CircleGeometry(200, 64);
+			const groundMirror = new Reflector(geometry, {
+				clipBias: 0.003,
+				textureWidth: window.innerWidth * window.devicePixelRatio,
+				textureHeight: window.innerHeight * window.devicePixelRatio,
+				color: 0x777777
+			});
+			groundMirror.position.y = -189;
+			groundMirror.rotateX(-Math.PI / 2);
+			world.scene.add(groundMirror);
 
 
 			/**
