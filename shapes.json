@@ -549,6 +549,20 @@
     {
         "position": [
             0,
+            -270,
+            0
+        ],
+        "size": [
+            10000,
+            1,
+            10000
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/ruine.jpg"
+    },
+    {
+        "position": [
+            0,
             0,
             0
         ],
@@ -558,6 +572,6 @@
             10
         ],
         "geometry": "SphereGeometry",
-        "image": "textures/blue-sky.jpg"
+        "image": "textures/1920px-Sky_hr_aztec_csgo.jpg"
     }
 ]
