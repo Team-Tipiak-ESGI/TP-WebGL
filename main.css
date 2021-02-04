@@ -77,7 +77,7 @@ select {
     color: #000000;
     padding: 16px 20px;
     text-transform: uppercase;
-cursor: pointer;
+    cursor: pointer;
 }
 
 #notSupported {

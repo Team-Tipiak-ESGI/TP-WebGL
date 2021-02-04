@@ -6,148 +6,124 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
+		<link type="text/css" rel="stylesheet" href="loading/loading.css">
 	</head>
 
 	<body>
 
-        <!-- <script src="threejs/three.js"></script>
-		<script src="threejs/OrbitControls.js"></script>
-		<script src="threejs/ColladaLoader.js"></script>
-		<script src="main.js"></script> -->
+		<canvas id="threejs" style="opacity: 0; transition: .5s;"></canvas>
+
+		<div id="overlay">
+			<div class="loading" id="loading" style="top: 40%;">
+				<div class="bar"></div>
+				<div class="bar"></div>
+				<div class="bar"></div>
+				<div class="bar"></div>
+				<div class="bar"></div>
+			</div>
+
+			<button id="start">Start scene</button>
+		</div>
+
 		<script src="threejs/stats.min.js"></script>
 		<script src="threejs/dat.gui.min.js"></script>
-
+		<script src="loading/loading.js"></script>
 
 		<script type="module">
-			import * as THREE from '/threejs/three.module.js';
-			import { ColladaLoader } from '/threejs/jsm/loaders/ColladaLoader.js';
-			import { Reflector } from '/threejs/jsm/objects/Reflector.js';
-			import { World } from '/main.js';
+			import * as THREE from './threejs/three.module.js';
+			import { Reflector } from './threejs/jsm/objects/Reflector.js';
+			import { World } from './main.js';
 
-			const world = new World();
-			const clock = new THREE.Clock();
+			function init() {
+				const start = Date.now();
+				toggleLoading('loading'); // Start Loading animation
 
-			var stats = new Stats();
-			stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-			document.body.appendChild( stats.dom );
-			
-			world.createSpotLight(1600, 0, 1000);
-			world.buildGui();
+				const canvas = document.getElementById('threejs');
+				const world = new World(canvas);
 
-			fetch('shapes.json')
-				.then(res => res.json())
-				.then(json => {
-					// Add shapes from the JSON
+				window.onresize = () => world.onWindowResize();
 
-					for (const shape of json) {
-						try {
-							world.createShape({
-								position: shape.position,
-								size: shape.size,
-								image: shape.image,
-								geometry: shape.geometry,
-							});
-						} catch (e) {
-							console.log(e);
-						}
-					}
-				});
-
+				const stats = new Stats();
+				stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+				document.body.appendChild( stats.dom );
 				
-			let model, mixer;
+				const {spotLight, lightHelper} = world.createSpotLight(1600, 0, 1000);
+				world.createSpotLight(200, 0, 200, 0, 0, 0, {distance: 1000});
 
-			// collada
+				world.buildSpotLightGui(spotLight, lightHelper);
+				world.createCollada('./resources/Rumba Dancing.dae');
+				world.createAudioSource(200, -180, 0, './resources/rick.mp3');
 
-			const loader = new ColladaLoader();
-			loader.load('./resources/Rumba Dancing.dae', function (collada) {
+				fetch('shapes.json')
+					.then(res => res.json())
+					.then(json => {
+						// Add shapes from the JSON
 
-				const avatar = collada.scene;
-				const animations = avatar.animations;
+						for (const shape of json) {
+							try {
+								world.createShape({
+									position: shape.position,
+									size: shape.size,
+									image: shape.image,
+									geometry: shape.geometry,
+								});
+							} catch (e) {
+								console.log(e);
+							}
+						}
 
-				avatar.traverse(function (node) {
+						toggleLoading('loading'); // Stop loading animation
+						const load = document.getElementById('loading');
+						const overlay = document.getElementById('overlay');
 
-					if (node.isSkinnedMesh) {
-						node.frustumCulled = false;
-					}
+						setTimeout(() => {
+							canvas.style.opacity = '1';
+							load.style.opacity = '0';
+							overlay.style.opacity = '0';
+							overlay.style.display = 'none';
+						}, 500);
+
+						console.log('Full loading time : ' + (Date.now() - start) + 'ms');
+					});
+
+				// Add a mirror
+				const geometry = new THREE.CircleGeometry(200, 64);
+				const groundMirror = new Reflector(geometry, {
+					clipBias: 0.003,
+					textureWidth: window.innerWidth * window.devicePixelRatio,
+					textureHeight: window.innerHeight * window.devicePixelRatio,
+					color: 0x777777
 				});
+				groundMirror.position.z = -634;
+				groundMirror.rotateZ(-Math.PI / 2);
+				world.scene.add(groundMirror);
 
-				mixer = new THREE.AnimationMixer(avatar);
-				mixer.clipAction(animations[0]).play();
+				/**
+				 * Animate the world
+				 */
 
-				world.scene.add(avatar);
+				function animate() {
+					stats.begin();
+					world.renderer.render(world.scene, world.camera);
 
-				avatar.scale.set(2, 2, 2)
-				avatar.position.y = -200;
-			});
+					world.controls.update();
 
-			// listener
-			const listener = new THREE.AudioListener();
-			world.camera.add(listener);
+					// Animate spotlight
+					if (spotLight !== undefined) {
+						spotLight.position.y = (spotLight.position.y % 1000) + 1;
+					}
 
-			// audio loader
-			const audioLoader = new THREE.AudioLoader();
+					world.animateCollada();
 
-			// audio sphere
-			const sphere = new THREE.SphereGeometry(20, 32, 16);
-			const material1 = new THREE.MeshPhongMaterial({ color: 0xffaa00, flatShading: true, shininess: 0 });
-			const mesh1 = new THREE.Mesh(sphere, material1);
-			mesh1.position.set(200, -180, 0);
-			world.scene.add(mesh1);
+					stats.end();
 
-			const sound1 = new THREE.PositionalAudio(listener);
-			audioLoader.load('/resources/rick.mp3', function (buffer) {
-
-				sound1.setBuffer(buffer);
-				sound1.setRefDistance(50);
-				sound1.play();
-
-			});
-			mesh1.add(sound1);
-
-			// mirror
-			let geometry, material;
-
-			geometry = new THREE.CircleGeometry(200, 64);
-			const groundMirror = new Reflector(geometry, {
-				clipBias: 0.003,
-				textureWidth: window.innerWidth * window.devicePixelRatio,
-				textureHeight: window.innerHeight * window.devicePixelRatio,
-				color: 0x777777
-			});
-			groundMirror.position.y = -189;
-			groundMirror.rotateX(-Math.PI / 2);
-			world.scene.add(groundMirror);
-
-
-			/**
-			 * Animate the world
-			 */
-
-			function animate() {
-				stats.begin();
-				world.renderer.render(world.scene, world.camera);
-
-				world.controls.update();
-
-				const sl = world.spotLight;
-				if (sl !== undefined) {
-					sl.position.y = (sl.position.y % 1000) + 1;
+					requestAnimationFrame(animate);
 				}
-				stats.end();
 
 				requestAnimationFrame(animate);
-				
-				// Collada animation
-
-				const delta = clock.getDelta();
-				if (mixer !== undefined) {
-					mixer.update(delta);
-				}
-
-				world.renderer.render(world.scene, world.camera);
 			}
 
-			requestAnimationFrame( animate );
+			document.getElementById('start').addEventListener('click', init);
 		</script>
 
 	</body>

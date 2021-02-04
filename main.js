@@ -1,15 +1,22 @@
-import * as THREE from '/threejs/three.module.js';
-import { OrbitControls } from '/threejs/jsm/controls/OrbitControls.js';
-import { ColladaLoader } from '/threejs/jsm/loaders/ColladaLoader.js';
+import * as THREE from './threejs/three.module.js';
+import { OrbitControls } from './threejs/jsm/controls/OrbitControls.js';
+import { ColladaLoader } from './threejs/jsm/loaders/ColladaLoader.js';
 
 export class World {
     /**
      * Create a scene for the world
      */
-    constructor() {
+    constructor(canvas) {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
-        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        
+        if (canvas) {
+            this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
+        } else {
+            this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        }
+
+
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
         // Create camera
@@ -28,6 +35,16 @@ export class World {
         const ambient = new THREE.AmbientLight(0xffffff, 0.1);
         this.scene.add(ambient);
 
+        // Clock
+        this.clock = new THREE.Clock();
+
+        // Audio listener
+        this.listener = new THREE.AudioListener();
+        this.camera.add(this.listener);
+
+        // Audio loader
+        this.audioLoader = new THREE.AudioLoader();
+
         // Add the renderer element to webpage
         document.body.appendChild(this.renderer.domElement);
 
@@ -36,100 +53,188 @@ export class World {
     }
 
     onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
 
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    createSpotLight(x, y, z) {
-        this.spotLight = new THREE.SpotLight(0xffffff, 1);
-        this.spotLight.position.set(x, y, z);
-        this.spotLight.angle = Math.PI / 4;
-        this.spotLight.penumbra = 0.1;
-        this.spotLight.decay = 2;
-        this.spotLight.distance = 20000;
+    /*
+     * Collada
+     */
 
-        this.spotLight.castShadow = true;
-        this.spotLight.shadow.mapSize.width = 2048;
-        this.spotLight.shadow.mapSize.height = 2048;
-        this.spotLight.shadow.camera.near = 10;
-        this.spotLight.shadow.camera.far = 200;
-        this.spotLight.shadow.focus = 1;
+    /**
+     * Create and add a new model to the scene
+     * @param {string} file File path to the .dae file
+     */
+    createCollada(file) {
+        this.loader = new ColladaLoader();
+        this.loader.load(file, (collada) => {
+            const avatar = collada.scene;
+            const animations = avatar.animations;
 
-        this.scene.add(this.spotLight);
+            avatar.traverse((node) => {
+                if (node.isSkinnedMesh) {
+                    node.frustumCulled = false;
+                    node.castShadow = true;
+                    node.receiveShadow = true;
+                }
+            });
 
-        this.lightHelper = new THREE.SpotLightHelper(this.spotLight);
-        this.scene.add(this.lightHelper);
+            this.mixer = new THREE.AnimationMixer(avatar);
+            this.mixer.clipAction(animations[0]).play();
+
+            this.scene.add(avatar);
+
+            avatar.scale.set(2, 2, 2);
+            avatar.position.y = -200;
+        });
     }
 
-    getSpotlight() {
-        return this.spotLight;
-    }
-
-    
-    render() {
-        this.lightHelper.update();
+    animateCollada() {
+        const delta = this.clock.getDelta();
+        if (this.mixer !== undefined) {
+            this.mixer.update(delta);
+        }
 
         this.renderer.render(this.scene, this.camera);
     }
 
-    buildGui() {
+    /*
+     * Audio
+     */
 
+    /**
+     * 
+     * @param {number} x 
+     * @param {number} y
+     * @param {number} z
+     * @param {number} file
+     */
+    createAudioSource(x, y, z, file) {
+        // audio sphere
+        const sphere = new THREE.SphereGeometry(20, 32, 16);
+        const material = new THREE.MeshPhongMaterial({ color: 0xffaa00, flatShading: true, shininess: 0 });
+        const mesh = new THREE.Mesh(sphere, material);
+        mesh.position.set(x, y, z);
+
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        
+        this.scene.add(mesh);
+
+        const sound = new THREE.PositionalAudio(this.listener);
+        this.audioLoader.load(file, (buffer) => {
+            sound.setBuffer(buffer);
+            sound.setRefDistance(50);
+            sound.play();
+        });
+
+        mesh.add(sound);
+    }
+
+    /*
+     * Spotlight
+     */
+
+    /**
+     * Create a new spotlight in the scene
+     * @param {number} x X coordinate of the spotlight
+     * @param {number} y Y coordinate
+     * @param {number} z Z coordinate
+     * @param {number} rx X rotation of the spotlight
+     * @param {number} ry Y rotation
+     * @param {number} rz Z rotation
+     * @return {{THREE.SpotLight, THREE.SpotLightHelper}}
+     */
+    createSpotLight(x, y, z, rx = 0, ry = 0, rz = 0, options) {
+        const spotLight = new THREE.SpotLight(0xffffff, 1);
+        spotLight.position.set(x, y, z);
+        spotLight.angle = Math.PI / 4;
+        spotLight.penumbra = 0.1;
+        spotLight.decay = 2;
+        spotLight.distance = options?.distance ?? 20000;
+
+        spotLight.castShadow = true;
+        spotLight.shadow.mapSize.width = 2048;
+        spotLight.shadow.mapSize.height = 2048;
+        spotLight.shadow.camera.near = 10;
+        spotLight.shadow.camera.far = 200;
+        spotLight.shadow.focus = 1;
+
+        this.scene.add(spotLight);
+
+        const lightHelper = new THREE.SpotLightHelper(spotLight);
+        this.scene.add(lightHelper);
+
+        return {spotLight: spotLight, lightHelper: lightHelper};
+    }
+
+    /*
+     * GUI
+     */
+
+    render(lightHelper) {
+        lightHelper.update();
+
+        this.renderer.render(this.scene, this.camera);
+    }
+
+    buildSpotLightGui(spotLight, lightHelper) {
         const gui = new dat.GUI();
 
         const params = {
-            'light color': this.spotLight.color.getHex(),
-            intensity: this.spotLight.intensity,
-            distance: this.spotLight.distance,
-            angle: this.spotLight.angle,
-            penumbra: this.spotLight.penumbra,
-            decay: this.spotLight.decay,
-            focus: this.spotLight.shadow.focus
+            'light color': spotLight.color.getHex(),
+            intensity: spotLight.intensity,
+            distance: spotLight.distance,
+            angle: spotLight.angle,
+            penumbra: spotLight.penumbra,
+            decay: spotLight.decay,
+            focus: spotLight.shadow.focus
         };
 
         gui.addColor(params, 'light color').onChange((val) => {
-            this.spotLight.color.setHex(val);
-            this.render();
+            spotLight.color.setHex(val);
+            this.render(lightHelper);
         });
 
         gui.add(params, 'intensity', 0, 2).onChange((val) => {
-            this.spotLight.intensity = val;
-            this.render();
+            spotLight.intensity = val;
+            this.render(lightHelper);
         });
 
         gui.add(params, 'distance', 2000, 5000).onChange((val) => {
-            this.spotLight.distance = val;
-            this.render();
+            spotLight.distance = val;
+            this.render(lightHelper);
         });
 
         gui.add(params, 'angle', 0, Math.PI / 3).onChange((val) => {
-            this.spotLight.angle = val;
-            this.render();
+            spotLight.angle = val;
+            this.render(lightHelper);
         });
 
         gui.add(params, 'penumbra', 0, 1).onChange((val) => {
-            this.spotLight.penumbra = val;
-            this.render();
+            spotLight.penumbra = val;
+            this.render(lightHelper);
         });
 
         gui.add(params, 'decay', 1, 2).onChange((val) => {
-            this.spotLight.decay = val;
-            this.render();
+            spotLight.decay = val;
+            this.render(lightHelper);
         });
 
         gui.add(params, 'focus', 0, 1).onChange((val) => {
-            this.spotLight.shadow.focus = val;
-            this.render();
+            spotLight.shadow.focus = val;
+            this.render(lightHelper);
         });
 
         gui.open();
-
     }
 
-    /**
+    /*
      * Create and add a new shape to the world
      */
+
     createShape(options) {
         let geometry;
 
