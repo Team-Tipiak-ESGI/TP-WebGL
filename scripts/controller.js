@@ -23,6 +23,8 @@ export default class PlayerController {
             image: "textures/player.png"
         });
 
+        body.setDamping(.01, 0);
+
         this.player = mesh;
         this.body = body;
 
@@ -93,7 +95,7 @@ export default class PlayerController {
         const delta = this.world.clock.getDelta();
 
         // Player controls
-        const speed = 250000;
+        const speed = 10000000;
 
         let moveX = 0, moveY = 0, moveZ = 0;
 
@@ -120,10 +122,9 @@ export default class PlayerController {
             moveY = 1;
         }
 
-        if( moveX === 0 && moveY === 0 && moveZ === 0) return;
-
-        const resultantImpulse = new Ammo.btVector3(moveX, moveY, moveZ)
-        resultantImpulse.op_mul(speed * delta);
-        this.body.setLinearVelocity(resultantImpulse);
+        const resultantImpulse = new Ammo.btVector3(moveX, moveY, moveZ);
+        resultantImpulse.op_mul(speed * 1000 * delta);
+        this.body.applyImpulse(resultantImpulse, new Ammo.btVector3(0, 0, 0));
+        //this.body.setLinearVelocity(resultantImpulse);
     }
 }

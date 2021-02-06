@@ -24,7 +24,6 @@ export default class Multiplayer {
                                     size: [100, 100, 100],
                                     geometry: "BoxBufferGeometry",
                                     image: "textures/player.png",
-                                    rigidBody: false,
                                 });
 
                                 this.players[uuid] = mesh;
@@ -49,6 +48,9 @@ export default class Multiplayer {
                     ply.geometry.dispose();
                     ply.material.dispose();
                     this.world.scene.remove( ply );
+
+                    this.players[json.value] = undefined;
+                    delete this.players[json.value];
 
                     break;
 

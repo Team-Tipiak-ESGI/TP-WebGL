@@ -1,6 +1,5 @@
 import * as THREE from '../threejs/three.module.js';
 import { ColladaLoader } from '../threejs/jsm/loaders/ColladaLoader.js';
-import PlayerController from './controller.js';
 
 export class World {
     /**
