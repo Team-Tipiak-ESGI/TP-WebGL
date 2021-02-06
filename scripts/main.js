@@ -373,6 +373,9 @@ export class World {
 
                 geometry.computeFaceNormals();
 
+                shape = new Ammo.btBoxShape(new Ammo.btVector3(size.w * 0.5, size.h / 2 * 0.5, size.d * 0.5));
+
+                volume = (size.d / 2) * size.h / 2 * (size.w / 2);
 
                 break;
 
