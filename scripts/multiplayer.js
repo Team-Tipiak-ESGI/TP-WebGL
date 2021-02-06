@@ -16,21 +16,31 @@ export default class Multiplayer {
 
                     for (const uuid in json.value) {
                         if (json.value.hasOwnProperty(uuid) && uuid !== this.own_uuid) {
-                            const player = json.value[uuid];
+                            const player = json.value[uuid].position;
+
+                            if (player.position === undefined || player.position === null) {
+                                return
+                            }
 
                             if (this.players[uuid] === undefined) {
-                                const {body, mesh} = this.world.createShape({
+                                this.players[uuid] = this.world.createShape({
                                     position: [...Object.values(player.position)],
                                     size: [100, 100, 100],
                                     geometry: "BoxBufferGeometry",
                                     image: "textures/player.png",
                                 });
-
-                                this.players[uuid] = mesh;
                             } else {
-                                this.players[uuid].position.x = player.position.x;
-                                this.players[uuid].position.y = player.position.y;
-                                this.players[uuid].position.z = player.position.z;
+                                const origin = this.players[uuid].body.getCenterOfMassTransform().getOrigin();
+                                origin.setX(player.position.x);
+                                origin.setY(player.position.y);
+                                origin.setZ(player.position.z);
+
+                                const rotation = this.players[uuid].body.getCenterOfMassTransform().getRotation();
+                                rotation.setX(player.rotation.x);
+                                rotation.setY(player.rotation.y);
+                                rotation.setZ(player.rotation.z);
+
+                                this.players[uuid].body.setLinearVelocity(new Ammo.btVector3(...Object.values(player.linearVelocity)));
                             }
                         }
                     }
@@ -45,12 +55,9 @@ export default class Multiplayer {
                 // Handle disconnection
                 case 'disconnect':
                     const ply = this.players[json.value];
-                    ply.geometry.dispose();
-                    ply.material.dispose();
-                    this.world.scene.remove( ply );
-
-                    this.players[json.value] = undefined;
-                    delete this.players[json.value];
+                    ply.mesh.geometry.dispose();
+                    ply.mesh.material.dispose();
+                    this.world.scene.remove( ply.mesh );
 
                     break;
 
@@ -61,10 +68,14 @@ export default class Multiplayer {
         };
     }
 
+    /**
+     *
+     * @param {PlayerController} player
+     */
     animate(player) {
         // Send own player data to server
         if (this.server.readyState === 1) {
-            this.server.send(JSON.stringify({type: "position", value: player.getPosition()}));
+            this.server.send(JSON.stringify({ type: "position", value: player.getData() }));
         }
     }
 }

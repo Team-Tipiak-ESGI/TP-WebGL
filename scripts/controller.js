@@ -47,6 +47,8 @@ export default class PlayerController {
                 // Optional
                 this.world.camera.rotation.y = this.world.camera.rotation.y % (Math.PI * 2);
                 this.world.camera.rotation.x = Math.min(Math.PI / 2, Math.max(-Math.PI / 2, this.world.camera.rotation.x % (Math.PI * 2)));
+
+                // TODO: Set angle of player
             }
         });
 
@@ -58,11 +60,33 @@ export default class PlayerController {
         this.raycaster = new THREE.Raycaster(undefined, undefined, 0, 50 /* must be at least height / 2 */);
     }
 
-    getPosition() {
+    getData() {
+        const origin = this.body.getCenterOfMassTransform().getOrigin();
+        const rotation = this.body.getCenterOfMassTransform().getRotation();
+        const linearVelocity = this.body.getLinearVelocity();
+        const angularVelocity = this.body.getAngularVelocity();
+
         return {
-            x: this.player.position.x,
-            y: this.player.position.y,
-            z: this.player.position.z,
+            position: {
+                x: origin.x(),
+                y: origin.y(),
+                z: origin.z(),
+            },
+            rotation: {
+                x: rotation.x(),
+                y: rotation.y(),
+                z: rotation.z(),
+            },
+            linearVelocity: {
+                x: linearVelocity.x(),
+                y: linearVelocity.y(),
+                z: linearVelocity.z(),
+            },
+            angularVelocity: {
+                x: angularVelocity.x(),
+                y: angularVelocity.y(),
+                z: angularVelocity.z(),
+            },
         }
     }
 
