@@ -1,6 +1,6 @@
-import * as THREE from './threejs/three.module.js';
-import { OrbitControls } from './threejs/jsm/controls/OrbitControls.js';
-import { ColladaLoader } from './threejs/jsm/loaders/ColladaLoader.js';
+import * as THREE from '../threejs/three.module.js';
+import { ColladaLoader } from '../threejs/jsm/loaders/ColladaLoader.js';
+import PlayerController from './controller.js';
 
 export class World {
     /**
@@ -9,6 +9,7 @@ export class World {
     constructor(canvas) {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
+        this.camera.rotation.order = 'YXZ';
         
         if (canvas) {
             this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
@@ -16,13 +17,9 @@ export class World {
             this.renderer = new THREE.WebGLRenderer({ antialias: true });
         }
 
-
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-
         // Create camera
-        this.camera.position.set(1600, 0, 1000);
-        this.camera.lookAt(0, 0, 0);
-        this.controls.update();
+        /*this.camera.position.set(1600, 0, 1000);
+        this.camera.lookAt(0, 0, 0);*/
 
         // Setup the renderer
         this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -54,13 +51,14 @@ export class World {
         this.initPhysics();
     }
 
+
     /*
      * Physics
      */
 
     initPhysics() {
         // Physics variables
-        const gravityConstant = -9.8;
+        const gravityConstant = -9.8 * 100;
         this.rigidBodies = [];
 
         // Physics configuration
@@ -117,6 +115,8 @@ export class World {
 
         this.physicsWorld.addRigidBody(body);
 
+        return body;
+
     }
 
     onWindowResize() {
@@ -171,20 +171,17 @@ export class World {
 
         // Update rigid bodies
         for ( let i = 0, il = this.rigidBodies.length; i < il; i ++ ) {
-
             const objThree = this.rigidBodies[ i ];
             const objPhys = objThree.userData.physicsBody;
             const ms = objPhys.getMotionState();
-            if ( ms ) {
 
+            if ( ms ) {
                 ms.getWorldTransform( this.transformAux1 );
                 const p = this.transformAux1.getOrigin();
                 const q = this.transformAux1.getRotation();
                 objThree.position.set( p.x(), p.y(), p.z() );
                 objThree.quaternion.set( q.x(), q.y(), q.z(), q.w() );
-
             }
-
         }
     }
 
@@ -416,6 +413,8 @@ export class World {
             mesh.material.side = THREE.DoubleSide;
         }
 
+        let body;
+
         if (shape && (options.rigidBody ?? true)) {
             /*if (options.geometry === "CylinderBufferGeometry") {
                 position[1] = size.d;
@@ -426,9 +425,11 @@ export class World {
 
             shape.setMargin(0.05);
 
-            this.createRigidBody(mesh, shape, options.mass ?? volume, vector3, quaternion);
+            body = this.createRigidBody(mesh, shape, options.mass ?? volume, vector3, quaternion);
         }
 
         this.scene.add(mesh);
+
+        return {body: body, mesh: mesh};
     }
 }
