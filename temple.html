@@ -22,6 +22,7 @@
 				<div class="bar"></div>
 			</div>
 
+			<input type="text" id="server_address" placeholder="Multiplayer server address" value="wss://experiments.quozul.dev/threejs">
 			<button id="start">Start scene</button>
 		</div>
 
@@ -35,6 +36,7 @@
 			import { Reflector } from './threejs/jsm/objects/Reflector.js';
 			import { World } from './scripts/main.js';
 			import PlayerController from './scripts/controller.js';
+			import Multiplayer from './scripts/multiplayer.js';
 
 			function startScene() {
 				Ammo().then(function (AmmoLib) {
@@ -63,6 +65,7 @@
 				world.createCollada('./resources/Rumba Dancing.dae');
 				world.createAudioSource(200, -180, 0, './resources/rick.mp3');
 
+				const multiplayer = new Multiplayer(world);
 				const player = new PlayerController(world);
 
 				fetch('shapes.json')
@@ -119,16 +122,14 @@
 					stats.begin();
 					world.renderer.render(world.scene, world.camera);
 
-					//world.controls.update();
-
 					// Animate spotlight
 					/*if (spotLight !== undefined) {
 						spotLight.position.y = (spotLight.position.y % 1000) + 1;
 					}*/
 
 					world.animate();
-
 					player.animate();
+					multiplayer.animate(player);
 
 					stats.end();
 

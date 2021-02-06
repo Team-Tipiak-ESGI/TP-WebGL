@@ -1,0 +1,25 @@
+{
+  "name": "tp-webgl",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node run server/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Team-Tipiak-ESGI/TP-WebGL.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Team-Tipiak-ESGI/TP-WebGL/issues"
+  },
+  "homepage": "https://github.com/Team-Tipiak-ESGI/TP-WebGL#readme",
+  "dependencies": {
+    "socket.io": "^3.1.1",
+    "uuid": "^8.3.2",
+    "ws": "^7.4.3"
+  }
+}

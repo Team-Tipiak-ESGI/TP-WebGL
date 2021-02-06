@@ -15,9 +15,9 @@ export default class PlayerController {
                 100
             ],
             size: [
-                400,
-                400,
-                400
+                100,
+                100,
+                100
             ],
             geometry: "BoxBufferGeometry",
             image: "textures/player.png"
@@ -53,6 +53,14 @@ export default class PlayerController {
         });
 
         this.playerDirection = new THREE.Vector3();
+    }
+
+    getPosition() {
+        return {
+            x: this.player.position.x,
+            y: this.player.position.y,
+            z: this.player.position.z,
+        }
     }
 
     getForwardVector() {
