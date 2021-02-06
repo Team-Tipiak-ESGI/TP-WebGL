@@ -55,6 +55,7 @@ export default class PlayerController {
         });
 
         this.playerDirection = new THREE.Vector3();
+        this.raycaster = new THREE.Raycaster(undefined, undefined, 0, 50 /* must be at least height / 2 */);
     }
 
     getPosition() {
@@ -118,13 +119,16 @@ export default class PlayerController {
             moveZ += Math.cos(pa + Math.PI / 2);
         }
 
-        if (this.keyStates['Space']) {
-            moveY = 1;
+        this.raycaster.set(this.player.position, new THREE.Vector3(0, -1, 0));
+        const objects = this.world.scene.children.filter(o => o instanceof THREE.Object3D);
+        const result = this.raycaster.intersectObjects(objects);
+
+        if (this.keyStates['Space'] && result.length > 0) {
+            moveY = 20;
         }
 
         const resultantImpulse = new Ammo.btVector3(moveX, moveY, moveZ);
         resultantImpulse.op_mul(speed * 1000 * delta);
         this.body.applyImpulse(resultantImpulse, new Ammo.btVector3(0, 0, 0));
-        //this.body.setLinearVelocity(resultantImpulse);
     }
 }
