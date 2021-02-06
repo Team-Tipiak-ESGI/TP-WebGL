@@ -64,7 +64,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -78,7 +78,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -92,7 +92,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -106,7 +106,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -120,7 +120,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -134,7 +134,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -148,7 +148,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -162,7 +162,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -176,7 +176,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -190,7 +190,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -204,7 +204,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -218,7 +218,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -232,7 +232,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -246,7 +246,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -260,7 +260,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -274,7 +274,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -288,7 +288,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -302,7 +302,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -316,21 +316,7 @@
         "size": [
             30,
             30,
-            500
-        ],
-        "geometry": "CylinderBufferGeometry",
-        "image": "textures/piliers.jpg"
-    },
-    {
-        "position": [
-            600,
-            0,
-            800
-        ],
-        "size": [
-            30,
-            30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -344,7 +330,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -358,7 +344,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -372,7 +358,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -386,7 +372,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -400,7 +386,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -414,7 +400,7 @@
         "size": [
             30,
             30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -428,21 +414,7 @@
         "size": [
             30,
             30,
-            500
-        ],
-        "geometry": "CylinderBufferGeometry",
-        "image": "textures/piliers.jpg"
-    },
-    {
-        "position": [
-            -400,
-            0,
-            800
-        ],
-        "size": [
-            30,
-            30,
-            500
+            400
         ],
         "geometry": "CylinderBufferGeometry",
         "image": "textures/piliers.jpg"
@@ -450,12 +422,12 @@
     {
         "position": [
             100,
-            -10,
+            20,
             -650
         ],
         "size": [
             850,
-            500,
+            400,
             30
         ],
         "geometry": "BoxBufferGeometry",
@@ -464,12 +436,12 @@
     {
         "position": [
             510,
-            -10,
+            20,
             0
         ],
         "size": [
             30,
-            500,
+            400,
             1300
         ],
         "geometry": "BoxBufferGeometry",
@@ -478,12 +450,12 @@
     {
         "position": [
             -310,
-            -10,
+            20,
             0
         ],
         "size": [
             30,
-            500,
+            400,
             1300
         ],
         "geometry": "BoxBufferGeometry",
@@ -497,7 +469,7 @@
         ],
         "size": [
             300,
-            420,
+            400,
             30
         ],
         "geometry": "BoxBufferGeometry",
@@ -511,7 +483,7 @@
         ],
         "size": [
             300,
-            420,
+            400,
             30
         ],
         "geometry": "BoxBufferGeometry",
@@ -549,16 +521,17 @@
     {
         "position": [
             0,
-            -270,
+            -300,
             0
         ],
         "size": [
             10000,
-            1,
+            10,
             10000
         ],
         "geometry": "BoxBufferGeometry",
-        "image": "textures/ruine.jpg"
+        "image": "textures/ruine.jpg",
+        "mass": 0
     },
     {
         "position": [

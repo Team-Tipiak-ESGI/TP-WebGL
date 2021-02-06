@@ -50,6 +50,73 @@ export class World {
 
         // Handle window resize
         window.addEventListener('resize', this.onWindowResize, false);
+
+        this.initPhysics();
+    }
+
+    /*
+     * Physics
+     */
+
+    initPhysics() {
+        // Physics variables
+        const gravityConstant = -9.8;
+        this.rigidBodies = [];
+
+        // Physics configuration
+
+        const collisionConfiguration = new Ammo.btSoftBodyRigidBodyCollisionConfiguration();
+        const dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
+        const broadphase = new Ammo.btDbvtBroadphase();
+        const solver = new Ammo.btSequentialImpulseConstraintSolver();
+        const softBodySolver = new Ammo.btDefaultSoftBodySolver();
+        this.physicsWorld = new Ammo.btSoftRigidDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration, softBodySolver);
+        this.physicsWorld.setGravity(new Ammo.btVector3(0, gravityConstant, 0));
+        this.physicsWorld.getWorldInfo().set_m_gravity(new Ammo.btVector3(0, gravityConstant, 0));
+
+        this.transformAux1 = new Ammo.btTransform();
+    }
+
+    /**
+     * 
+     * @param {THREE.Mesh} threeObject
+     * @param {Ammo.btBoxShape} physicsShape
+     * @param {number} mass
+     * @param {THREE.Vector3} pos
+     * @param {THREE.Quaternion} quat
+     */
+    createRigidBody(threeObject, physicsShape, mass, pos, quat) {
+
+        threeObject.position.copy(pos);
+        threeObject.quaternion.copy(quat);
+
+        const transform = new Ammo.btTransform();
+        transform.setIdentity();
+        transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
+        transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
+        const motionState = new Ammo.btDefaultMotionState(transform);
+
+        const localInertia = new Ammo.btVector3(0, 0, 0);
+        physicsShape.calculateLocalInertia(mass, localInertia);
+
+        const rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, physicsShape, localInertia);
+        const body = new Ammo.btRigidBody(rbInfo);
+
+        threeObject.userData.physicsBody = body;
+
+        this.scene.add(threeObject);
+
+        if (mass > 0) {
+
+            this.rigidBodies.push(threeObject);
+
+            // Disable deactivation
+            body.setActivationState(4);
+
+        }
+
+        this.physicsWorld.addRigidBody(body);
+
     }
 
     onWindowResize() {
@@ -91,13 +158,34 @@ export class World {
         });
     }
 
-    animateCollada() {
+    animate() {
         const delta = this.clock.getDelta();
         if (this.mixer !== undefined) {
             this.mixer.update(delta);
         }
 
         this.renderer.render(this.scene, this.camera);
+
+        // Step world
+        this.physicsWorld.stepSimulation( delta, 10 );
+
+        // Update rigid bodies
+        for ( let i = 0, il = this.rigidBodies.length; i < il; i ++ ) {
+
+            const objThree = this.rigidBodies[ i ];
+            const objPhys = objThree.userData.physicsBody;
+            const ms = objPhys.getMotionState();
+            if ( ms ) {
+
+                ms.getWorldTransform( this.transformAux1 );
+                const p = this.transformAux1.getOrigin();
+                const q = this.transformAux1.getRotation();
+                objThree.position.set( p.x(), p.y(), p.z() );
+                objThree.quaternion.set( q.x(), q.y(), q.z(), q.w() );
+
+            }
+
+        }
     }
 
     /*
@@ -165,7 +253,7 @@ export class World {
         this.scene.add(spotLight);
 
         const lightHelper = new THREE.SpotLightHelper(spotLight);
-        this.scene.add(lightHelper);
+        //this.scene.add(lightHelper);
 
         return {spotLight: spotLight, lightHelper: lightHelper};
     }
@@ -244,15 +332,23 @@ export class World {
             d: options.d || options.depth || options.size[2],
         };
 
+        let shape;
+
         // Get position
         let position =
             options.x !== undefined && options.y !== undefined && options.z !== undefined ?
                 [options.x, options.y, options.z] :
                 options.position || options.pos;
 
+        let volume = 0;
+
         switch (options.geometry) {
             case 'CylinderBufferGeometry':
                 geometry = new THREE.CylinderBufferGeometry(size.w, size.h, size.d);
+                volume = Math.PI * Math.pow(size.w, 2) * size.h;
+
+                shape = new Ammo.btCylinderShape(new Ammo.btVector3(size.w * 0.5, size.d * 0.5, size.h * 0.5));
+
                 break;
 
             case 'Triangle':
@@ -280,6 +376,8 @@ export class World {
                             geometry.faces.push(new THREE.Face3(i, j, k));
 
                 geometry.computeFaceNormals();
+
+
                 break;
 
             case 'SphereGeometry':
@@ -288,6 +386,11 @@ export class World {
 
             case 'BoxBufferGeometry':
             default:
+
+                shape = new Ammo.btBoxShape(new Ammo.btVector3(size.w * 0.5, size.h * 0.5, size.d * 0.5));
+
+                volume = size.d * size.h * size.w;
+
                 geometry = new THREE.BoxBufferGeometry(size.w, size.h, size.d);
                 break;
 
@@ -311,6 +414,19 @@ export class World {
             mesh.receiveShadow = true;
         } else {
             mesh.material.side = THREE.DoubleSide;
+        }
+
+        if (shape && (options.rigidBody ?? true)) {
+            /*if (options.geometry === "CylinderBufferGeometry") {
+                position[1] = size.d;
+            }*/
+
+            const vector3 = new THREE.Vector3(...position);
+            const quaternion = new THREE.Quaternion(0, 0, 0, 1);
+
+            shape.setMargin(0.05);
+
+            this.createRigidBody(mesh, shape, options.mass ?? volume, vector3, quaternion);
         }
 
         this.scene.add(mesh);

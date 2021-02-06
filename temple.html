@@ -28,11 +28,19 @@
 		<script src="threejs/stats.min.js"></script>
 		<script src="threejs/dat.gui.min.js"></script>
 		<script src="loading/loading.js"></script>
+		<script src="threejs/js/libs/ammo.wasm.js"></script>
 
 		<script type="module">
 			import * as THREE from './threejs/three.module.js';
 			import { Reflector } from './threejs/jsm/objects/Reflector.js';
 			import { World } from './main.js';
+
+			function startScene() {
+				Ammo().then(function (AmmoLib) {
+					Ammo = AmmoLib;
+					init();
+				});
+			}
 
 			function init() {
 				const start = Date.now();
@@ -66,6 +74,8 @@
 									size: shape.size,
 									image: shape.image,
 									geometry: shape.geometry,
+									rigidBody: shape.rigidBody,
+									mass: shape.mass,
 								});
 							} catch (e) {
 								console.log(e);
@@ -113,7 +123,7 @@
 						spotLight.position.y = (spotLight.position.y % 1000) + 1;
 					}
 
-					world.animateCollada();
+					world.animate();
 
 					stats.end();
 
@@ -123,7 +133,7 @@
 				requestAnimationFrame(animate);
 			}
 
-			document.getElementById('start').addEventListener('click', init);
+			document.getElementById('start').addEventListener('click', startScene);
 		</script>
 
 	</body>
