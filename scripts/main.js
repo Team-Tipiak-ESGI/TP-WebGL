@@ -38,6 +38,9 @@ export class World {
         this.listener = new THREE.AudioListener();
         this.camera.add(this.listener);
 
+        // Collada loader
+        this.loader = new ColladaLoader();
+
         // Audio loader
         this.audioLoader = new THREE.AudioLoader();
 
@@ -134,35 +137,28 @@ export class World {
      * @param {string} file File path to the .dae file
      */
     createCollada(file) {
-        this.loader = new ColladaLoader();
-        this.loader.load(file, (collada) => {
-            const avatar = collada.scene;
-            const animations = avatar.animations;
+        return new Promise((resolve, reject) => {
+            this.loader.load(file, (collada) => {
+                const avatar = collada.scene;
+                const animations = avatar.animations;
 
-            avatar.traverse((node) => {
-                if (node.isSkinnedMesh) {
-                    node.frustumCulled = false;
-                    node.castShadow = true;
-                    node.receiveShadow = true;
-                }
+                avatar.traverse((node) => {
+                    if (node.isSkinnedMesh) {
+                        node.frustumCulled = false;
+                        node.castShadow = true;
+                        node.receiveShadow = true;
+                    }
+                });
+
+                const mixer = new THREE.AnimationMixer(avatar);
+                mixer.clipAction(animations[0]).play();
+
+                resolve({mixer: mixer, avatar: avatar});
             });
-
-            this.mixer = new THREE.AnimationMixer(avatar);
-            this.mixer.clipAction(animations[0]).play();
-
-            this.scene.add(avatar);
-
-            avatar.scale.set(2, 2, 2);
-            avatar.position.y = -200;
         });
     }
 
-    animate() {
-        const delta = this.clock.getDelta();
-        if (this.mixer !== undefined) {
-            this.mixer.update(delta);
-        }
-
+    animate(delta) {
         this.renderer.render(this.scene, this.camera);
 
         // Step world

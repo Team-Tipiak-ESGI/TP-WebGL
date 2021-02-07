@@ -2,7 +2,7 @@ body {
     margin: 0;
     background-color: #000;
     color: #fff;
-    font-family: Monospace;
+    font-family: monospace, serif;
     font-size: 13px;
     line-height: 24px;
     overscroll-behavior: none;
@@ -28,7 +28,7 @@ canvas {
 
 #info {
     position: absolute;
-    top: 0px;
+    top: 0;
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
@@ -71,19 +71,9 @@ select {
     background: rgba(0, 0, 0, 0.7);
 }
 
-#overlay button {
-    background: #ffffff;
-    border: 0;
-    color: #000000;
-    padding: 16px 20px;
-    text-transform: uppercase;
-    cursor: pointer;
-}
-
 #notSupported {
     width: 50%;
-    margin: auto;
     background-color: #f00;
-    margin-top: 20px;
+    margin: 20px auto auto;
     padding: 10px;
 }

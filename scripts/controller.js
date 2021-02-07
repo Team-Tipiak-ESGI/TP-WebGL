@@ -148,7 +148,7 @@ export default class PlayerController {
         const result = this.raycaster.intersectObjects(objects);
 
         if (this.keyStates['Space'] && result.length > 0) {
-            moveY = 50;
+            moveY = 25;
         }
 
         const resultantImpulse = new Ammo.btVector3(moveX, moveY, moveZ);
