@@ -37,9 +37,10 @@ export default class Multiplayer {
                                 // Create mesh and physic body
                                 this.players[uuid] = this.world.createShape({
                                     position: [...Object.values(loc.position)],
-                                    size: [100, 100, 100],
+                                    size: [100, 300, 100],
                                     geometry: "BoxBufferGeometry",
                                     image: "textures/player.png",
+                                    opacity: 0,
                                 });
 
                                 // Create collada
@@ -47,7 +48,7 @@ export default class Multiplayer {
                                     .then(({mixer, avatar}) => {
                                         avatar.scale.set(2, 2, 2);
                                         avatar.position.x = loc.position.x;
-                                        avatar.position.y = loc.position.y - 50;
+                                        avatar.position.y = loc.position.y - 150;
                                         avatar.position.z = loc.position.z;
 
                                         world.scene.add(avatar);
@@ -58,7 +59,6 @@ export default class Multiplayer {
 
                                 // Create username
                                 const span = document.createElement('span');
-                                console.log(player);
                                 span.innerText = player.name;
                                 span.id = uuid;
                                 usernames.append(span);
@@ -80,7 +80,7 @@ export default class Multiplayer {
                                 if (this.players[uuid].avatar !== undefined) {
                                     const avatar = this.players[uuid].avatar;
                                     avatar.position.x = loc.position.x;
-                                    avatar.position.y = loc.position.y - 50;
+                                    avatar.position.y = loc.position.y - 150;
                                     avatar.position.z = loc.position.z;
 
                                     avatar.rotation.x = loc.rotation.x;

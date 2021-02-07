@@ -98,7 +98,6 @@ export class World {
      * @param {THREE.Quaternion} quat
      */
     createRigidBody(threeObject, physicsShape, mass, pos, quat) {
-
         threeObject.position.copy(pos);
         threeObject.quaternion.copy(quat);
 
@@ -116,21 +115,16 @@ export class World {
 
         threeObject.userData.physicsBody = body;
 
-        this.scene.add(threeObject);
-
         if (mass > 0) {
-
             this.rigidBodies.push(threeObject);
 
             // Disable deactivation
             body.setActivationState(4);
-
         }
 
         this.physicsWorld.addRigidBody(body);
 
         return body;
-
     }
 
     onWindowResize() {
@@ -168,6 +162,20 @@ export class World {
                 resolve({mixer: mixer, avatar: avatar});
             });
         });
+    }
+
+    colladaPhysicBody(avatar, size) {
+        // Physic body
+        const position = new THREE.Vector3(avatar.position.x, avatar.position.y, avatar.position.z), target = new THREE.Vector3(...size);
+        const quaternion = new THREE.Quaternion(0, 0, 0, 1);
+
+        const box = new THREE.Box3().setFromCenterAndSize(position, target);
+        box.getSize(target);
+
+        const shape = new Ammo.btBoxShape(new Ammo.btVector3(target.x * 0.5, target.y * 0.5, target.z * 0.5));
+        shape.setMargin(0);
+
+        return this.createRigidBody(avatar, shape, 1, position, quaternion);
     }
 
     animate(delta) {
@@ -393,7 +401,6 @@ export class World {
 
             case 'BoxBufferGeometry':
             default:
-
                 shape = new Ammo.btBoxShape(new Ammo.btVector3(size.w * 0.5, size.h * 0.5, size.d * 0.5));
 
                 volume = size.d * size.h * size.w;
@@ -414,25 +421,20 @@ export class World {
         const material = new THREE.MeshPhongMaterial({ map: texture, dithering: true });
         material.opacity = options.opacity ?? 1;
         material.transparent = options.opacity === 0;
-        console.log(options.opacity, material.opacity, material.transparent);
 
         const mesh = new THREE.Mesh(geometry, material);
 
         mesh.position.set(...position);
-        if (options.geometry !== 'SphereGeometry') {
+        if (options.geometry !== 'SphereGeometry' && options.opacity !== 0) {
             mesh.castShadow = true;
             mesh.receiveShadow = true;
-        } else {
-            mesh.material.side = THREE.DoubleSide;
+        /*} else {
+            mesh.material.side = THREE.DoubleSide;*/
         }
 
         let body;
 
         if (shape && (options.rigidBody ?? true)) {
-            /*if (options.geometry === "CylinderBufferGeometry") {
-                position[1] = size.d;
-            }*/
-
             const vector3 = new THREE.Vector3(...position);
             const quaternion = new THREE.Quaternion(0, 0, 0, 1);
 

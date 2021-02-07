@@ -99,6 +99,13 @@ select {
     transform: translateX(-50%) translateY(-50%);
 }
 
+#position {
+    position: absolute;
+    z-index: 1;
+    top: 100px;
+    left: 0;
+}
+
 /* Copyleft */
 .copyleft {
     display: inline-block;

@@ -8,6 +8,8 @@ export default class PlayerController {
     constructor(world) {
         this.world = world;
 
+        this.height = 300;
+
         const {body, mesh} = world.createShape({
             position: [
                 800,
@@ -16,11 +18,12 @@ export default class PlayerController {
             ],
             size: [
                 100,
-                100,
+                this.height,
                 100
             ],
             geometry: "BoxBufferGeometry",
-            image: "textures/player.png"
+            image: "textures/player.png",
+            opacity: 0,
         });
 
         body.setDamping(.01, 0);
@@ -57,7 +60,7 @@ export default class PlayerController {
         });
 
         this.playerDirection = new THREE.Vector3();
-        this.raycaster = new THREE.Raycaster(undefined, undefined, 0, 50 /* must be at least height / 2 */);
+        this.raycaster = new THREE.Raycaster(undefined, undefined, 0, this.height / 2 /* must be at least height / 2 */);
     }
 
     getData() {
@@ -115,12 +118,12 @@ export default class PlayerController {
         // Update camera
         this.world.camera.position.x = this.player.position.x;
         this.world.camera.position.z = this.player.position.z;
-        this.world.camera.position.y = this.player.position.y;
+        this.world.camera.position.y = this.player.position.y + this.height / 2;
 
         const delta = this.world.clock.getDelta();
 
         // Player controls
-        const speed = 10000000;
+        const speed = 20000000;
 
         let moveX = 0, moveY = 0, moveZ = 0;
 
@@ -154,5 +157,10 @@ export default class PlayerController {
         const resultantImpulse = new Ammo.btVector3(moveX, moveY, moveZ);
         resultantImpulse.op_mul(speed * 1000 * delta);
         this.body.applyImpulse(resultantImpulse, new Ammo.btVector3(0, 0, 0));
+
+        // Keep the player up
+        this.body.getCenterOfMassTransform().setRotation(new Ammo.btQuaternion(0, this.world.camera.rotation.y, 0, 1));
+
+        document.getElementById('position').innerText = `x=${this.player.position.x}\ny=${this.player.position.y}\nz=${this.player.position.z}`;
     }
 }

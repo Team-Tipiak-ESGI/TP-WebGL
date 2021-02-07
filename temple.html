@@ -19,6 +19,8 @@
 
 		<div id="usernames"></div>
 
+		<div id="position"></div>
+
 		<div id="overlay">
 			<div class="loading" id="loading" style="top: 35%;">
 				<div class="bar"></div>
@@ -88,12 +90,12 @@
 				world.createCollada('./resources/Rumba Dancing.dae')
 					.then(({mixer, avatar}) => {
 						avatar.scale.set(2, 2, 2);
-						avatar.position.y = -200;
 
 						world.scene.add(avatar);
 
 						_mixer = mixer;
-						console.log(mixer);
+
+						world.colladaPhysicBody(avatar, [200, 0, 200]);
 					});
 				world.createAudioSource(200, -180, 0, './resources/rick.mp3');
 
@@ -118,7 +120,7 @@
 									opacity: shape.opacity,
 								});
 							} catch (e) {
-								console.log(e);
+								console.err(e);
 							}
 						}
 
