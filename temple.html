@@ -80,15 +80,16 @@
 
 				world.buildSpotLightGui(spotLight, lightHelper);
 
-				let mixer;
+				let _mixer;
 				world.createCollada('./resources/Rumba Dancing.dae')
-					.then(({_mixer, avatar}) => {
+					.then(({mixer, avatar}) => {
 						avatar.scale.set(2, 2, 2);
 						avatar.position.y = -200;
 
 						world.scene.add(avatar);
 
-						mixer = _mixer;
+						_mixer = mixer;
+						console.log(mixer);
 					});
 				world.createAudioSource(200, -180, 0, './resources/rick.mp3');
 
@@ -110,6 +111,7 @@
 									geometry: shape.geometry,
 									rigidBody: shape.rigidBody,
 									mass: shape.mass,
+									opacity: shape.opacity,
 								});
 							} catch (e) {
 								console.log(e);
@@ -156,8 +158,8 @@
 						spotLight.position.y = (spotLight.position.y % 1000) + 1;
 					}*/
 
-					if (mixer !== undefined) {
-						mixer.update(delta);
+					if (_mixer !== undefined) {
+						_mixer.update(delta);
 					}
 
 					world.animate(delta);

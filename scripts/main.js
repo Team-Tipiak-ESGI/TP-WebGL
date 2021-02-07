@@ -16,6 +16,18 @@ export class World {
             this.renderer = new THREE.WebGLRenderer({ antialias: true });
         }
 
+        // Scene background
+        const loader = new THREE.TextureLoader();
+        const texture = loader.load('./textures/1920px-Sky_hr_aztec_csgo.jpg', () => {
+            const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
+            rt.fromEquirectangularTexture(this.renderer, texture);
+            this.scene.background = rt;
+        });
+
+        // Ambient light
+        const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+        this.scene.add( light );
+
         // Create camera
         /*this.camera.position.set(1600, 0, 1000);
         this.camera.lookAt(0, 0, 0);*/
@@ -345,13 +357,13 @@ export class World {
 
             case 'Triangle':
                 geometry = new THREE.Geometry();
-                const v1 = new THREE.Vector3(-size.w / 2, 0, -size.d / 2);
-                const v2 = new THREE.Vector3(size.w / 2, 0, -size.d / 2);
-                const v3 = new THREE.Vector3(0, size.h, -size.d / 2);
+                const v1 = new THREE.Vector3(-size.w / 2, -size.h / 4, -size.d / 2);
+                const v2 = new THREE.Vector3(size.w / 2, -size.h / 4, -size.d / 2);
+                const v3 = new THREE.Vector3(0, size.h / 2, -size.d / 2);
 
-                const v4 = new THREE.Vector3(0, size.h, size.d / 2);
-                const v5 = new THREE.Vector3(size.w / 2, 0, size.d / 2);
-                const v6 = new THREE.Vector3(-size.w / 2, 0, size.d / 2);
+                const v4 = new THREE.Vector3(0, size.h / 2, size.d / 2);
+                const v5 = new THREE.Vector3(size.w / 2, -size.h / 4, size.d / 2);
+                const v6 = new THREE.Vector3(-size.w / 2, -size.h / 4, size.d / 2);
 
                 geometry.vertices.push(v1);
                 geometry.vertices.push(v2);
@@ -371,7 +383,7 @@ export class World {
 
                 shape = new Ammo.btBoxShape(new Ammo.btVector3(size.w * 0.5, size.h / 2 * 0.5, size.d * 0.5));
 
-                volume = (size.d / 2) * size.h / 2 * (size.w / 2);
+                volume = (size.d / 2) * (size.h) * (size.w / 2);
 
                 break;
 
@@ -400,6 +412,9 @@ export class World {
         }
 
         const material = new THREE.MeshPhongMaterial({ map: texture, dithering: true });
+        material.opacity = options.opacity ?? 1;
+        material.transparent = options.opacity === 0;
+        console.log(options.opacity, material.opacity, material.transparent);
 
         const mesh = new THREE.Mesh(geometry, material);
 

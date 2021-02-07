@@ -506,7 +506,7 @@
     {
         "position": [
             100,
-            1000,
+            270,
             0
         ],
         "size": [
@@ -524,9 +524,9 @@
             0
         ],
         "size": [
-            10000,
+            20000,
             10,
-            10000
+            20000
         ],
         "geometry": "BoxBufferGeometry",
         "image": "textures/ruine.jpg",
@@ -536,14 +536,64 @@
         "position": [
             0,
             0,
+            -5000
+        ],
+        "size": [
+            10000,
+            600,
+            10
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/ruine.jpg",
+        "mass": 0,
+        "opacity": 0
+    },
+    {
+        "position": [
+            0,
+            0,
+            5000
+        ],
+        "size": [
+            10000,
+            600,
+            10
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/ruine.jpg",
+        "mass": 0,
+        "opacity": 0
+    },
+    {
+        "position": [
+            -5000,
+            0,
             0
         ],
         "size": [
-            5000,
             10,
-            10
+            600,
+            10000
         ],
-        "geometry": "SphereGeometry",
-        "image": "textures/1920px-Sky_hr_aztec_csgo.jpg"
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/ruine.jpg",
+        "mass": 0,
+        "opacity": 0
+    },
+    {
+        "position": [
+            5000,
+            0,
+            0
+        ],
+        "size": [
+            10,
+            600,
+            10000
+        ],
+        "geometry": "BoxBufferGeometry",
+        "image": "textures/ruine.jpg",
+        "mass": 0,
+        "opacity": 0
     }
 ]
