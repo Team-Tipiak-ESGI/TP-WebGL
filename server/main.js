@@ -16,10 +16,8 @@ server.on('connection', (socket) => {
     socket.on('message', (message) => {
         const json = JSON.parse(message);
 
-        switch (json.type) {
-            case 'position':
-                players[uuid].position = json.value;
-                break;
+        if (players[uuid][json.type] !== undefined) {
+            players[uuid][json.type] = json.value;
         }
     });
 
