@@ -26,6 +26,20 @@ export default class PlayerController {
             opacity: 0,
         });
 
+        // Create self collada
+        /*this.world.createCollada('./resources/Walking.dae')
+            .then(({mixer, avatar}) => {
+                avatar.scale.set(2, 2, 2);
+                avatar.position.x = 800;
+                avatar.position.y = 800 - this.height / 2;
+                avatar.position.z = 100;
+
+                this.world.scene.add(avatar);
+
+                this.avatar = avatar;
+                this.mixer = mixer;
+            });*/
+
         body.setDamping(.01, 0);
 
         this.player = mesh;
@@ -65,9 +79,11 @@ export default class PlayerController {
 
     getData() {
         const origin = this.body.getCenterOfMassTransform().getOrigin();
-        const rotation = this.body.getCenterOfMassTransform().getRotation();
         const linearVelocity = this.body.getLinearVelocity();
         const angularVelocity = this.body.getAngularVelocity();
+
+        const q = this.body.getCenterOfMassTransform().getRotation();
+        const qx = q.x(), qy = q.y(), qz = q.z(), qw = q.w();
 
         return {
             position: {
@@ -76,9 +92,10 @@ export default class PlayerController {
                 z: origin.z(),
             },
             rotation: {
-                x: rotation.x(),
-                y: rotation.y(),
-                z: rotation.z(),
+                x: qx,
+                y: qy,
+                z: qz,
+                w: qw,
             },
             linearVelocity: {
                 x: linearVelocity.x(),
@@ -122,6 +139,19 @@ export default class PlayerController {
 
         const delta = this.world.clock.getDelta();
 
+        // Animate Collada
+        /*if (this.mixer !== undefined) {
+            const linearVelocity = this.body.getLinearVelocity().length();
+            this.mixer.update(delta * (linearVelocity / 500));
+        }
+
+        // Move collada
+        if (this.avatar !== undefined) {
+            this.avatar.position.x = this.player.position.x;
+            this.avatar.position.z = this.player.position.z;
+            this.avatar.position.y = this.player.position.y - this.height / 2;
+        }*/
+
         // Player controls
         const speed = 20000000;
 
@@ -160,7 +190,14 @@ export default class PlayerController {
 
         // Keep the player up
         this.body.getCenterOfMassTransform().setRotation(new Ammo.btQuaternion(0, this.world.camera.rotation.y, 0, 1));
+        //this.body.getCenterOfMassTransform().getRotation().setEulerZYX(0, this.world.camera.rotation.y, 0);
 
-        document.getElementById('position').innerText = `x=${this.player.position.x}\ny=${this.player.position.y}\nz=${this.player.position.z}`;
+        // Debug position and rotation
+        document.getElementById('position').innerText =
+`x=${Math.floor(this.player.position.x)}
+y=${Math.floor(this.player.position.y)}
+z=${Math.floor(this.player.position.z)}
+
+rx=${this.world.camera.rotation.y.toFixed(2)}`;
     }
 }

@@ -69,10 +69,8 @@ export default class Multiplayer {
                                     origin.setY(loc.position.y);
                                     origin.setZ(loc.position.z);
 
-                                    const rotation = this.players[uuid].body.getCenterOfMassTransform().getRotation();
-                                    rotation.setX(loc.rotation.x);
-                                    rotation.setY(loc.rotation.y);
-                                    rotation.setZ(loc.rotation.z);
+                                    this.players[uuid].body.getCenterOfMassTransform()
+                                        .setRotation(new Ammo.btQuaternion(loc.rotation.x, loc.rotation.y, loc.rotation.z, loc.rotation.w));
 
                                     this.players[uuid].body.setLinearVelocity(new Ammo.btVector3(...Object.values(loc.linearVelocity)));
                                 }
@@ -83,9 +81,15 @@ export default class Multiplayer {
                                     avatar.position.y = loc.position.y - 150;
                                     avatar.position.z = loc.position.z;
 
-                                    avatar.rotation.x = loc.rotation.x;
-                                    avatar.rotation.y = loc.rotation.y;
-                                    avatar.rotation.z = loc.rotation.z;
+                                    const qw = loc.rotation.w;
+                                    const angle = 2 * Math.acos(qw);
+                                    const x = loc.rotation.x / Math.sqrt(1-qw*qw);
+                                    const y = loc.rotation.y / Math.sqrt(1-qw*qw);
+                                    const z = loc.rotation.z / Math.sqrt(1-qw*qw);
+
+                                    avatar.rotation.x = x;
+                                    avatar.rotation.y = angle;
+                                    avatar.rotation.z = z;
 
                                     // https://stackoverflow.com/a/27410603
                                     const screenPosition = this.toScreenPosition(avatar, this.world.camera);
@@ -143,9 +147,9 @@ export default class Multiplayer {
         for (const uuid in this.players) {
             if (this.players.hasOwnProperty(uuid)) {
                 const ply = this.players[uuid];
-                const linearVelocity = ply.body.getLinearVelocity().length();
 
                 if (ply.mixer !== undefined) {
+                    const linearVelocity = ply.body.getLinearVelocity().length();
                     ply.mixer.update(delta * (linearVelocity / 500));
                 }
             }
